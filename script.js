@@ -14,3 +14,8 @@ function decrease() {
 function updateDisplay() {
     counterDisplay.textContent = count;
 }
+
+function reset() {
+    count = 0;
+    updateDisplay();
+}
