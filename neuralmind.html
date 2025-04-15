@@ -1,1 +1,706 @@
-h
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuralMind - 생각을 시각화하는 혁신적인 앱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#3F3E99',
+                        'primary-light': '#7675E8',
+                        dark: {
+                            bg: '#181818',
+                            card: '#222222',
+                            text: '#E0E0E0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1s ease-in-out'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 다크 모드 설정
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        :root {
+            --primary: #5D5CDE;
+            --secondary: #3F3E99;
+            --primary-light: #7675E8;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .neuron-bg {
+            background-image: radial-gradient(circle, rgba(93, 92, 222, 0.2) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(93, 92, 222, 0.3);
+        }
+
+        .dark .feature-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(118, 117, 232, 0.2);
+        }
+
+        .mockup-shadow {
+            filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.15));
+        }
+
+        .mindmap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .node {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            transition: all 0.5s ease;
+        }
+
+        .connection {
+            position: absolute;
+            background-color: var(--primary);
+            z-index: 1;
+            transform-origin: left center;
+            transition: all 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .mockup-container {
+                transform: scale(0.8);
+            }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text overflow-x-hidden">
+    <!-- 헤더 -->
+    <header class="fixed w-full z-50 bg-white/90 dark:bg-dark-bg/90 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center">
+                    <i class="fas fa-brain text-white text-lg"></i>
+                </div>
+                <span class="text-2xl font-bold gradient-text">NeuralMind</span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#features" class="font-medium hover:text-primary dark:hover:text-primary-light transition">주요 기능</a>
+                <a href="#how-it-works" class="font-medium hover:text-primary dark:hover:text-primary-light transition">작동 방식</a>
+                <a href="#use-cases" class="font-medium hover:text-primary dark:hover:text-primary-light transition">활용 사례</a>
+                <a href="#download" class="font-medium hover:text-primary dark:hover:text-primary-light transition">다운로드</a>
+            </nav>
+            <button class="md:hidden text-gray-600 dark:text-gray-300 focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="pt-28 pb-16 md:pt-32 md:pb-24 neuron-bg relative overflow-hidden">
+        <div class="container mx-auto px-6 flex flex-col lg:flex-row items-center">
+            <div class="lg:w-1/2 z-10 animate-fade-in">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    생각의 흐름을 <span class="gradient-text">시각화</span>하는 <br>혁신적인 마인드맵
+                </h1>
+                <p class="text-lg md:text-xl mb-8 text-gray-600 dark:text-gray-300 max-w-xl">
+                    뉴럴마인드는 머신러닝 기술을 활용해 당신의 아이디어와 생각을 직관적으로 시각화하고 구조화하는 
+                    혁신적인 앱입니다.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#download" class="py-3 px-8 rounded-full bg-primary hover:bg-secondary text-white font-medium text-center transition duration-300 shadow-lg hover:shadow-xl">
+                        지금 다운로드
+                    </a>
+                    <a href="#how-it-works" class="py-3 px-8 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white dark:text-white font-medium text-center transition duration-300">
+                        자세히 알아보기
+                    </a>
+                </div>
+            </div>
+            <div class="lg:w-1/2 mt-16 lg:mt-0 flex justify-center lg:justify-end relative mockup-container">
+                <img src="https://i.imgur.com/qZpF67H.png" alt="뉴럴마인드 앱 화면" class="w-full max-w-md md:max-w-lg rounded-xl shadow-2xl mockup-shadow animate-float">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary-light/20 dark:bg-primary-light/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/20 dark:bg-primary/10 rounded-full blur-3xl"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 앱 소개 비디오 -->
+    <section class="py-16 md:py-24 bg-gray-50 dark:bg-dark-card">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12">뉴럴마인드로 <span class="gradient-text">아이디어를 현실로</span></h2>
+            <div class="bg-white dark:bg-dark-bg rounded-xl shadow-xl p-4 max-w-4xl mx-auto">
+                <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                    <!-- 실제 구현시 유튜브 영상이나 데모 비디오 삽입 -->
+                    <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <div class="text-center p-8">
+                            <i class="fas fa-play-circle text-primary text-5xl mb-4"></i>
+                            <p class="text-lg font-medium">뉴럴마인드 데모 비디오</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">실제 제품에서는 소개 영상이 표시됩니다</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 주요 기능 -->
+    <section id="features" class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">혁신적인 <span class="gradient-text">주요 기능</span></h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    뉴럴마인드는 머신러닝 기술을 활용해 당신의 아이디어를 효과적으로 구조화하고 시각화합니다.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 기능 1 -->
+                <div class="feature-card bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="w-14 h-14 mb-6 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">실시간 머신러닝 기반 마인드맵</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        최신 머신러닝 기술을 활용하여 사용자의 입력을 실시간으로 분석하고, 개념 간의 연관성을 파악하여 직관적인 마인드맵으로 변환합니다.
+                    </p>
+                </div>
+                
+                <!-- 기능 2 -->
+                <div class="feature-card bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="w-14 h-14 mb-6 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-microphone-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">음성인식 및 키워드 추출</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        말로 표현한 생각을 텍스트로 변환하고, 주요 키워드를 자동으로 추출하여 마인드맵 구성에 활용합니다.
+                    </p>
+                </div>
+                
+                <!-- 기능 3 -->
+                <div class="feature-card bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="w-14 h-14 mb-6 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-images text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">이미지 및 비디오 통합</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        관련 이미지와 비디오를 마인드맵에 통합하여 더욱 풍부하고 시각적인 아이디어 구조를 만들 수 있습니다.
+                    </p>
+                </div>
+                
+                <!-- 기능 4 -->
+                <div class="feature-card bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="w-14 h-14 mb-6 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">실시간 협업</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        여러 사용자가 동시에 같은 마인드맵에 접근하여 아이디어를 공유하고 발전시킬 수 있습니다.
+                    </p>
+                </div>
+                
+                <!-- 기능 5 -->
+                <div class="feature-card bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="w-14 h-14 mb-6 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-palette text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">다양한 시각화 옵션</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        여러 가지 마인드맵 레이아웃과 테마를 제공하여 사용자의 취향과 필요에 맞게 맞춤 설정할 수 있습니다.
+                    </p>
+                </div>
+                
+                <!-- 기능 6 -->
+                <div class="feature-card bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="w-14 h-14 mb-6 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-lightbulb text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">아이디어 추천 시스템</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        현재 마인드맵의 내용을 분석하여 관련 아이디어와 개념을 추천하여 사고의 확장을 도와줍니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 작동 방식 -->
+    <section id="how-it-works" class="py-16 md:py-24 bg-gray-50 dark:bg-dark-card">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">뉴럴마인드의 <span class="gradient-text">작동 방식</span></h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    뉴럴마인드는 복잡한 머신러닝 기술을 직관적인 인터페이스로 제공합니다.
+                </p>
+            </div>
+            
+            <div class="relative min-h-[400px] mb-16">
+                <div class="mindmap w-full h-full" id="mindmapDemo">
+                    <!-- 자바스크립트로 마인드맵 노드와 연결선이 생성됨 -->
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="order-2 md:order-1">
+                    <ol class="space-y-8">
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white font-bold">1</div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">생각 입력</h3>
+                                <p class="text-gray-600 dark:text-gray-300">텍스트나 음성으로 당신의 아이디어와 생각을 자유롭게 입력하세요.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white font-bold">2</div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">머신러닝 분석</h3>
+                                <p class="text-gray-600 dark:text-gray-300">뉴럴마인드의 AI 엔진이 입력된 내용을 분석하여 핵심 개념과 그 관계를 파악합니다.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white font-bold">3</div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">시각적 구조화</h3>
+                                <p class="text-gray-600 dark:text-gray-300">분석된 데이터를 기반으로 직관적인 마인드맵이 자동으로 생성됩니다.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white font-bold">4</div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">맞춤 조정</h3>
+                                <p class="text-gray-600 dark:text-gray-300">생성된 마인드맵을 필요에 맞게 조정하고 확장할 수 있습니다.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+                <div class="order-1 md:order-2">
+                    <img src="https://i.imgur.com/7FHQTxP.png" alt="뉴럴마인드 작동 방식" class="w-full rounded-xl shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 활용 사례 -->
+    <section id="use-cases" class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4"><span class="gradient-text">다양한 분야</span>에서의 활용</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    뉴럴마인드는 다양한 분야의 전문가들에게 유용한 도구가 됩니다.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 활용 사례 1 -->
+                <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-lg text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">학생</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        복잡한 개념을 이해하고 시험 준비를 위한 학습 자료를 체계적으로 정리할 수 있습니다.
+                    </p>
+                </div>
+                
+                <!-- 활용 사례 2 -->
+                <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-lg text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-search text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">연구자</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        연구 주제와 관련 문헌을 구조화하고 새로운 아이디어와 통찰력을 발견할 수 있습니다.
+                    </p>
+                </div>
+                
+                <!-- 활용 사례 3 -->
+                <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-lg text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-pen-fancy text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">작가</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        스토리 구조와 캐릭터 관계를 시각화하여 더 풍부한 내러티브를 개발할 수 있습니다.
+                    </p>
+                </div>
+                
+                <!-- 활용 사례 4 -->
+                <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-lg text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-briefcase text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">기업가</h3>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        비즈니스 아이디어를 구체화하고 프로젝트 계획을 효과적으로 시각화할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 사용자 후기 -->
+    <section class="py-16 md:py-24 bg-gray-50 dark:bg-dark-card">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">사용자들의 <span class="gradient-text">후기</span></h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    뉴럴마인드로 생각의 흐름을 혁신한 사용자들의 실제 경험담입니다.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 후기 1 -->
+                <div class="bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 mr-4"></div>
+                        <div>
+                            <h4 class="font-bold">김지훈</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">대학원생</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        "논문 작성을 위한 문헌 리뷰를 할 때 뉴럴마인드가 큰 도움이 되었습니다. 복잡한 개념들 간의 관계를 직관적으로 파악할 수 있어 연구의 효율성이 크게 향상되었습니다."
+                    </p>
+                </div>
+                
+                <!-- 후기 2 -->
+                <div class="bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 mr-4"></div>
+                        <div>
+                            <h4 class="font-bold">이수진</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">소설가</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star-half-alt text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        "소설의 캐릭터와 사건의 연결 관계를 시각화하는 데 뉴럴마인드만한 앱이 없습니다. 머신러닝이 제안하는 연결점은 종종 제가 생각하지 못했던 새로운 스토리 아이디어를 제공합니다."
+                    </p>
+                </div>
+                
+                <!-- 후기 3 -->
+                <div class="bg-white dark:bg-dark-card p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 mr-4"></div>
+                        <div>
+                            <h4 class="font-bold">박민우</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">스타트업 CEO</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        "팀 브레인스토밍 세션에서 뉴럴마인드를 사용한 후, 우리의 회의 생산성이 눈에 띄게 향상되었습니다. 실시간 협업 기능은 원격으로도 효과적인 아이디어 교환을 가능하게 합니다."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 다운로드 섹션 -->
+    <section id="download" class="py-16 md:py-24 neuron-bg relative overflow-hidden">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">지금 바로 <span class="gradient-text">뉴럴마인드</span>를 경험해보세요</h2>
+            <p class="text-lg mb-10 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                새로운 방식으로 생각을 구조화하고 아이디어를 발전시키세요.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <a href="https://play.google.com/store/apps/details?id=com.jason.neuralmind" target="_blank" class="flex items-center justify-center gap-3 py-4 px-8 rounded-xl bg-black text-white hover:bg-gray-800 transition duration-300">
+                    <i class="fab fa-google-play text-2xl"></i>
+                    <div class="text-left">
+                        <div class="text-xs">다운로드</div>
+                        <div class="font-medium">Google Play</div>
+                    </div>
+                </a>
+                <a href="#" class="flex items-center justify-center gap-3 py-4 px-8 rounded-xl bg-black text-white hover:bg-gray-800 transition duration-300">
+                    <i class="fab fa-apple text-2xl"></i>
+                    <div class="text-left">
+                        <div class="text-xs">곧 출시 예정</div>
+                        <div class="font-medium">App Store</div>
+                    </div>
+                </a>
+            </div>
+            <div class="mt-12 flex justify-center">
+                <img src="https://i.imgur.com/0STYMk3.png" alt="뉴럴마인드 앱 모바일 화면" class="max-w-xs md:max-w-sm rounded-xl shadow-2xl">
+            </div>
+        </div>
+        <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-primary/20 dark:bg-primary/10 rounded-full blur-3xl"></div>
+        <div class="absolute -top-20 -left-20 w-80 h-80 bg-primary-light/20 dark:bg-primary-light/10 rounded-full blur-3xl"></div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center">
+                            <i class="fas fa-brain text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">NeuralMind</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        머신러닝 기술로 생각을 시각화하는 혁신적인 마인드맵 앱
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">바로가기</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#features" class="text-gray-400 hover:text-white transition">주요 기능</a></li>
+                        <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition">작동 방식</a></li>
+                        <li><a href="#use-cases" class="text-gray-400 hover:text-white transition">활용 사례</a></li>
+                        <li><a href="#download" class="text-gray-400 hover:text-white transition">다운로드</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">지원</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">고객 지원</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">자주 묻는 질문</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">개인정보 처리방침</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">이용약관</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">연락처</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-envelope text-gray-400 mt-1"></i>
+                            <span class="text-gray-400">skypeople41@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-map-marker-alt text-gray-400 mt-1"></i>
+                            <span class="text-gray-400">대한민국</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500">
+                <p>&copy; 2023 NeuralMind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 마인드맵 데모 생성
+        function createMindmap() {
+            const container = document.getElementById('mindmapDemo');
+            if (!container) return;
+            
+            const centerX = container.offsetWidth / 2;
+            const centerY = container.offsetHeight / 2;
+            
+            // 중앙 노드
+            const centerNode = document.createElement('div');
+            centerNode.className = 'node';
+            centerNode.style.width = '100px';
+            centerNode.style.height = '100px';
+            centerNode.style.left = `${centerX - 50}px`;
+            centerNode.style.top = `${centerY - 50}px`;
+            centerNode.textContent = '뉴럴마인드';
+            container.appendChild(centerNode);
+            
+            // 주요 개념 노드와 연결
+            const concepts = [
+                { text: '머신러닝', angle: 0, distance: 180 },
+                { text: '아이디어', angle: 72, distance: 180 },
+                { text: '시각화', angle: 144, distance: 180 },
+                { text: '협업', angle: 216, distance: 180 },
+                { text: '생산성', angle: 288, distance: 180 }
+            ];
+            
+            concepts.forEach((concept, i) => {
+                // 각도를 라디안으로 변환
+                const rad = concept.angle * Math.PI / 180;
+                const x = centerX + concept.distance * Math.cos(rad);
+                const y = centerY + concept.distance * Math.sin(rad);
+                
+                // 노드 생성
+                const node = document.createElement('div');
+                node.className = 'node';
+                node.style.width = '80px';
+                node.style.height = '80px';
+                node.style.left = `${x - 40}px`;
+                node.style.top = `${y - 40}px`;
+                node.textContent = concept.text;
+                container.appendChild(node);
+                
+                // 연결선 생성
+                const connection = document.createElement('div');
+                connection.className = 'connection';
+                connection.style.height = '4px';
+                
+                // 선의 길이와 회전 각도 계산
+                const length = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+                connection.style.width = `${length - 100}px`; // 노드 크기 고려
+                connection.style.left = `${centerX}px`;
+                connection.style.top = `${centerY}px`;
+                connection.style.transform = `rotate(${concept.angle}deg)`;
+                
+                container.appendChild(connection);
+                
+                // 각 주요 개념에 서브 노드 추가
+                setTimeout(() => {
+                    const subConcepts = ['개념 1', '개념 2'];
+                    
+                    subConcepts.forEach((subText, j) => {
+                        const subAngle = concept.angle + (j === 0 ? -30 : 30);
+                        const subRad = subAngle * Math.PI / 180;
+                        const subDistance = 100;
+                        
+                        const subX = x + subDistance * Math.cos(subRad);
+                        const subY = y + subDistance * Math.sin(subRad);
+                        
+                        // 서브 노드 생성
+                        const subNode = document.createElement('div');
+                        subNode.className = 'node';
+                        subNode.style.width = '60px';
+                        subNode.style.height = '60px';
+                        subNode.style.left = `${subX - 30}px`;
+                        subNode.style.top = `${subY - 30}px`;
+                        subNode.textContent = subText;
+                        container.appendChild(subNode);
+                        
+                        // 서브 연결선 생성
+                        const subConnection = document.createElement('div');
+                        subConnection.className = 'connection';
+                        subConnection.style.height = '2px';
+                        
+                        const subLength = Math.sqrt(Math.pow(subX - x, 2) + Math.pow(subY - y, 2));
+                        subConnection.style.width = `${subLength - 70}px`; // 노드 크기 고려
+                        subConnection.style.left = `${x}px`;
+                        subConnection.style.top = `${y}px`;
+                        subConnection.style.transform = `rotate(${subAngle}deg)`;
+                        
+                        container.appendChild(subConnection);
+                    });
+                }, i * 300);
+            });
+        }
+        
+        // 페이지 로드 후 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            createMindmap();
+            
+            // 애니메이션 처리
+            const animateOnScroll = () => {
+                const elements = document.querySelectorAll('.feature-card');
+                elements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    const isVisible = rect.top < window.innerHeight * 0.85;
+                    
+                    if (isVisible) {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    } else {
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateY(20px)';
+                    }
+                });
+            };
+            
+            // 초기 설정
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+            });
+            
+            // 스크롤 이벤트 리스너
+            window.addEventListener('scroll', animateOnScroll);
+            
+            // 초기 실행
+            animateOnScroll();
+        });
+    </script>
+</body>
+</html>
